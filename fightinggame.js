@@ -170,3 +170,97 @@ turn_end?(player1, skill1, player2, skill2)（外部から呼び出し不可）
 
 
  */
+
+
+
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+// 自分の得意な言語で
+// Let's チャレンジ！！
+var lines = [];
+var reader = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+reader.on('line', (line) => {
+  lines.push(line);
+});
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]  
+    const players = []
+    
+    for (var i = 1; i <= N; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        players.push(new Player(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5], temp[6]))
+    }
+    //players.forEach(x => console.log(x));
+    
+    
+    for (var j = N + 1; j <= N + K; j++) {
+        const temp = lines[j].split(' ').map(x=> parseInt(x));
+        const p1 = players[temp[0] - 1];
+        const p2 = players[temp[2] - 1];
+        
+        if (!p1.IsAlive() || !p2.IsAlive()) continue
+        
+        const f1 = p1.f[temp[1] - 1]
+        const a1 = p1.a[temp[1] - 1]
+        const f2 = p2.f[temp[3] - 1]
+        const a2 = p2.a[temp[3] - 1]
+        
+        const p1Reinforce = a1 == 0 && f1 == 0
+        const p2Reinforce = a2 == 0 && f2 == 0
+        
+        if (p1Reinforce && p2Reinforce) {
+            p1.Reinforce()
+            p2.Reinforce()
+        } else if (p1Reinforce) {
+            p1.Reinforce()
+            p1.TakeDamage(a2)
+        } else if (p2Reinforce) {
+            p2.Reinforce()
+            p2.TakeDamage(a1)
+        } else {
+            f1 < f2 ? p2.TakeDamage(a1) : p1.TakeDamage(a2)  
+        }
+    }
+    
+    let numOfAlivePlayers =  0
+    for (let p of players) {
+        if (p.IsAlive()) numOfAlivePlayers++
+    }
+    
+    console.log(numOfAlivePlayers)
+});
+
+
+
+class Player {
+    constructor(hp, f1, a1, f2, a2, f3, a3){
+        this.hp = hp
+        this.f = [f1, f2, f3]
+        this.a = [a1, a2, a3]
+    }
+    
+    Reinforce() {
+        for (var i = 0; i < 3; i++) {
+            if (this.a[i] == 0 && this.f[i] == 0) continue
+            
+            this.a[i] += 5
+            this.f[i] = Math.max(this.f[i] - 3, 1)
+        }
+            
+    }
+    
+    IsAlive() {
+        return this.hp > 0
+    }
+    
+    TakeDamage(d) {
+        this.hp -= d
+    }
+}
+
+
