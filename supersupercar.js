@@ -238,7 +238,7 @@ class SuperSuperCar extends SuperCar {
     
     fly() {
         if (this.fuel < 5) {
-            return this.run()
+            return this.run() ///
         }
         this.mileage += Math.pow(this.gas_mileage, 2)
         this.fuel -= 5
@@ -253,7 +253,7 @@ class SuperSuperSuperCar extends SuperSuperCar {
 
     fly() {
         if (this.fuel < 5) {
-            return this.run()
+            return this.run() ///
         }
         this.mileage += 2 * Math.pow(this.gas_mileage, 2)
         this.fuel -= 5
@@ -261,7 +261,7 @@ class SuperSuperSuperCar extends SuperSuperCar {
     
     teleport() {
         if (this.fuel < Math.pow(this.gas_mileage, 2)) {
-            return this.fly()
+            return this.fly() ///
         }
         this.mileage += Math.pow(this.gas_mileage, 4)
         this.fuel -= Math.pow(this.gas_mileage, 2)
