@@ -186,4 +186,19 @@ class Customer2 {
     
 }
 
+//============================================================================================
+
+
+
+class Point {
+    constructor(alphabet, route1, route2) {
+        this.alphabet = alphabet
+        this.route1 = route1
+        this.route2 = route2
+    }
+    
+    Move(route) {
+        return route == '1' ? this.route1 : this.route2
+    }
+}
 
