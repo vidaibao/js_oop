@@ -509,7 +509,7 @@ reader.on('close', () => {
 });
 // 3/4
 
-
+//  This approach is known as prefix sum or cumulative sum
 
 reader.on('close', () => {
     const NK = lines[0].split(' ').map(x => parseInt(x))
@@ -529,3 +529,350 @@ reader.on('close', () => {
     
 });
 // 100
+
+
+
+
+// ======================================================================
+
+
+
+function createPrefixSumMatrix(matrix) {
+    const n = matrix.length; 
+    const m = matrix[0].length;
+  
+    // Create a prefix sum matrix of the same size
+    const prefixSum = new Array(n);
+    for (let i = 0; i < n; i++) {
+      prefixSum[i] = new Array(m).fill(0);
+    }
+  
+    // Initialize the top-left element of the prefix sum matrix
+    prefixSum[0][0] = matrix[0][0];
+  
+    // Fill the first row and first column of the prefix sum matrix
+    for (let i = 1; i < n; i++) {
+      prefixSum[i][0] = prefixSum[i - 1][0] + matrix[i][0];
+    }
+    for (let j = 1; j < m; j++) {
+      prefixSum[0][j] = prefixSum[0][j - 1] + matrix[0][j];
+    }
+  
+    // Fill the rest of the prefix sum matrix
+    for (let i = 1; i < n; i++) {
+      for (let j = 1; j < m; j++) {
+        prefixSum[i][j] = prefixSum[i - 1][j] + prefixSum[i][j - 1] - prefixSum[i - 1][j - 1] + matrix[i][j];
+      }
+    }
+  
+    return prefixSum;
+  }
+  
+  function sumSubmatrix(prefixSum, x1, y1, x2, y2) {
+    if (
+      x1 < 1 || x2 < 1 || y1 < 1 || y2 < 1 ||
+      x1 > 1000 || x2 > 1000 || y1 > 1000 || y2 > 1000
+    ) {
+      throw new Error("Invalid input range");
+    }
+  
+    x1--; y1--; x2--; y2--; // Adjust for 0-based indexing
+  
+    const sum = prefixSum[x2][y2]
+      - (x1 > 0 ? prefixSum[x1 - 1][y2] : 0)
+      - (y1 > 0 ? prefixSum[x2][y1 - 1] : 0)
+      + (x1 > 0 && y1 > 0 ? prefixSum[x1 - 1][y1 - 1] : 0);
+  
+    return sum;
+  }
+  
+  // Example usage:
+  // Create a 1000x1000 matrix (for simplicity, we'll use a smaller example here)
+  const matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+  ];
+  
+  const prefixSum = createPrefixSumMatrix(matrix);
+  
+  // Calculate the sum for a specific range (2, 2) to (3, 3)
+  const result = sumSubmatrix(prefixSum, 2, 2, 3, 3);
+  console.log(result); // Output: 20 (5 + 6 + 8 + 9)
+  
+
+
+
+
+/////////////////
+
+
+
+reader.on('close', () => {
+    const HWN = lines[0].split(' ').map(x => parseInt(x))
+    const H = HWN[0]
+    const W = HWN[1]
+    const N = HWN[2]
+    const matrix = []
+    
+    for (var i = 1; i <= H; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        matrix.push(temp)
+    }
+    //console.log(matrix)
+    
+    const prefixSum = createPrefixSumMatrix()
+    
+    //console.log(prefixSum)
+    
+    for (let i = H + 1; i <= H + N; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        const sumM = sumSubmatrix(prefixSum, 1, 1, temp[0], temp[1])
+        console.log(sumM)
+    }
+
+    
+    function createPrefixSumMatrix() {
+        
+        const n = matrix.length;    // H
+        const m = matrix[0].length; // W
+      
+        // Create a prefix sum matrix of the same size
+        const prefixSum = new Array(n);
+        for (let i = 0; i < n; i++) {
+            prefixSum[i] = new Array(m).fill(0);
+        }
+      
+        // Initialize the top-left element of the prefix sum matrix
+        prefixSum[0][0] = matrix[0][0];
+      
+        // Fill the first row and first column of the prefix sum matrix
+        for (let i = 1; i < n; i++) {
+            prefixSum[i][0] = prefixSum[i - 1][0] + matrix[i][0];
+        }
+        for (let j = 1; j < m; j++) {
+            prefixSum[0][j] = prefixSum[0][j - 1] + matrix[0][j];
+        }
+      
+        // Fill the rest of the prefix sum matrix
+        for (let i = 1; i < n; i++) {
+            for (let j = 1; j < m; j++) {
+                prefixSum[i][j] = prefixSum[i - 1][j] 
+                                + prefixSum[i][j - 1] 
+                                - prefixSum[i - 1][j - 1] 
+                                + matrix[i][j];
+            }
+        }
+        return prefixSum;
+    }
+    
+    
+    function sumSubmatrix(prefixSum, x1, y1, x2, y2) {
+        if (
+            x1 < 1 || x2 < 1 || y1 < 1 || y2 < 1 ||
+            x1 > 1000 || x2 > 1000 || y1 > 1000 || y2 > 1000
+        ) {
+            throw new Error("Invalid input range");
+        }
+        
+        x1--; y1--; x2--; y2--; // Adjust for 0-based indexing
+        
+        const sum = prefixSum[x2][y2]
+            - (x1 > 0 ? prefixSum[x1 - 1][y2] : 0)
+            - (y1 > 0 ? prefixSum[x2][y1 - 1] : 0)
+            + (x1 > 0 && y1 > 0 ? prefixSum[x1 - 1][y1 - 1] : 0);
+        
+        return sum;
+  }
+    
+    
+    //console.log(lines[0]);
+});
+// 100
+
+
+
+/**
+ * "Square root decomposition" (còn gọi là phân rã căn bậc hai) 
+ * là một kỹ thuật giải quyết các vấn đề liên quan đến dãy số hoặc mảng trong khoảng cố định. 
+ * Kỹ thuật này thường được sử dụng để tối ưu hóa thời gian thực hiện các phép toán trên các 
+ * phân đoạn cố định của dãy số, nhất là các phép tính tổng trong một phân đoạn cụ thể.
+
+Ý tưởng cơ bản của phân rã căn bậc hai là chia dãy số ban đầu thành các phân đoạn nhỏ 
+có kích thước gần bằng căn bậc hai của độ dài dãy. Cụ thể, nếu bạn có một dãy số có n phần tử,
+ thì bạn chia nó thành sqrt(n) phân đoạn. Sau đó, bạn tính toán tổng (hoặc thực hiện các phép toán khác) cho mỗi phân đoạn và lưu kết quả này.
+
+Khi bạn cần thực hiện một phép toán trên một phân đoạn cụ thể của dãy, thay vì thực hiện phép toán 
+trên tất cả các phần tử trong phân đoạn đó, bạn chỉ cần thực hiện phép toán trên các giá trị 
+đã được tính trước cho phân đoạn đó. Điều này giúp giảm đáng kể thời gian thực hiện phép toán,
+ đặc biệt là khi dãy số rất lớn.
+
+Tóm lại, "square root decomposition" là một kỹ thuật tối ưu hóa để giải quyết các vấn đề liên quan 
+đến dãy số hoặc mảng bằng cách chia chúng thành các phân đoạn nhỏ và tiền tính toán các giá trị 
+tương ứng để giảm thiểu thời gian thực hiện phép toán trong các phân đoạn cụ thể.
+ */
+
+
+
+
+// Dãy số ban đầu
+const originalArray = [1, 3, 2, 4, 5, 7, 6, 8];
+
+// Chia dãy thành các phân đoạn có kích thước là căn bậc hai của độ dài dãy
+const sqrtN = Math.ceil(Math.sqrt(originalArray.length));
+const segmentedArray = [];
+for (let i = 0; i < originalArray.length; i += sqrtN) {
+  const segment = originalArray.slice(i, i + sqrtN);
+  segmentedArray.push(segment);
+}
+
+// Tính tổng các phân đoạn và lưu kết quả
+const precomputedSum = [];
+for (let i = 0; i < segmentedArray.length; i++) {
+  const segment = segmentedArray[i];
+  const sum = segment.reduce((acc, value) => acc + value, 0);
+  precomputedSum.push(sum);
+}
+
+// Tính tổng của phân đoạn từ index 2 đến index 5 (1-based index)
+const x1 = 2;
+const y1 = 5;
+let sum = 0;
+
+for (let i = x1 - 1; i < y1; i++) {
+  sum += precomputedSum[Math.floor(i / sqrtN)];
+}
+
+console.log("Tổng của phân đoạn từ 2 đến 5:", sum);
+
+
+
+
+reader.on('close', () => {
+    const numbers = []
+    for (var i = 0; i < 10000; i++) {
+        numbers.push(parseInt(lines[i]))
+    }
+    
+    const sqrtN = Math.ceil(Math.sqrt(numbers.length));
+    //const segmentedArray = [];
+    
+    for (let i = 0; i < numbers.length; i += sqrtN) {
+        const segmentedArray = numbers.slice(i, i + sqrtN);
+        //const max = Math.max(...intArray);
+        const max = Math.max.apply(null, segmentedArray);
+        console.log(max);
+    }
+    //
+});
+
+
+
+
+
+/////////////////////////////////////
+
+
+
+
+// Define the original integer array
+const intArray = [3, 8, 2, 9, 5, 1, 7, 6, 4, 10, 22, 33, 35, 50, -6, -44, 88]; // Array of length 100
+
+// Determine the size of each segment
+const sqrtN = Math.ceil(Math.sqrt(intArray.length));
+
+// Create an array to store the maximum value in each segment
+const maxInSegment = new Array(sqrtN).fill(-Infinity);
+
+// Precompute the maximum value in each segment
+for (let i = 0; i < intArray.length; i++) {
+  const segmentIndex = Math.floor(i / sqrtN);
+  maxInSegment[segmentIndex] = Math.max(maxInSegment[segmentIndex], intArray[i]);
+}
+
+// Function to find the maximum value in the range [left, right]
+function findMaxInRange(left, right) {
+  let max = -Infinity;
+
+  // Check the first segment
+  let segmentStart = Math.ceil(left / sqrtN) * sqrtN;
+  for (let i = left; i < Math.min(right + 1, segmentStart); i++) {
+    max = Math.max(max, intArray[i]);
+  }
+
+  // Check the full segments
+  for (let segmentIndex = Math.ceil(left / sqrtN); segmentIndex < Math.floor(right / sqrtN); segmentIndex++) {
+    max = Math.max(max, maxInSegment[segmentIndex]);
+  }
+
+  // Check the last segment
+  let segmentEnd = Math.floor(right / sqrtN) * sqrtN;
+  for (let i = Math.max(left, segmentEnd); i <= right; i++) {
+    max = Math.max(max, intArray[i]);
+  }
+
+  return max;
+}
+
+// Example usage:
+const left = 3; // Left bound of the range
+const right = 8; // Right bound of the range
+
+const maxInRange = findMaxInRange(left, right);
+console.log("Maximum value in range:", maxInRange);
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+reader.on('close', () => {
+    const K = parseInt(lines[0])
+    const numbers = []
+    for (var i = 1; i < 10000; i++) {
+        numbers.push(parseInt(lines[i]))
+    }
+    
+    const sqrtN = Math.ceil(Math.sqrt(numbers.length));
+    //const segmentedArray = [];
+    const maxInSegment = []
+    
+    for (let i = 0; i < numbers.length; i += sqrtN) {
+        const segment = numbers.slice(i, i + sqrtN);
+        //segmentedArray.push(segment)
+        maxInSegment.push(Math.max.apply(null, segment));
+    }
+    //console.log(segmentedArray)
+    //console.log(maxInSegment)
+    
+    for (let i = 10001; i < 10001 + K; i++) {
+        findMaxInRange(i)
+    }
+
+
+    
+    function findMaxInRange(idx){
+        //let max = -Infinity;
+        const temp = lines[idx].split(' ').map(x => parseInt(x) - 1)
+        //console.log(temp);
+        
+        const left = temp[0]
+        const right = temp[1]
+        
+        let ans = numbers[left]
+        let now = left
+        
+        while (now <= right) {
+            if (now % sqrtN === 0 && now + sqrtN - 1 <= right) {
+                ans = Math.max(ans, maxInSegment[Math.floor(now / sqrtN)])
+                now += sqrtN
+            } else {
+                ans = Math.max(ans, numbers[now])
+                now++
+            }
+        }
+        console.log(ans)
+    }
+    
+  
+});
+// 50/100
