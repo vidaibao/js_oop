@@ -404,13 +404,22 @@ reader.on('close', () => {
         
         return 0; // Elements are considered equal
     }) 
+
+
+    Convert the Map into an array of key-value pairs using myMap.entries(). 
+    Then, we use the sort method on this array to sort it based on the values in descending order. 
+    If the values are the same (the difference is 0), we compare the keys in descending order 
+    using localeCompare.
+
+    The sortedMap will contain the Map sorted by values in descending order. 
+    If the values are the same, it will be sorted by keys in descending order.
     */
     const sortedMap = new Map([...namesSC.entries()].sort((a, b) => {
-            if (b[1] - a[1] === 0) {
-                return b[0].localeCompare(a[0]);
-            }
-            return b[1] - a[1];
-        }));
+        if (b[1] - a[1] === 0) {
+            return b[0].localeCompare(a[0]);
+        }
+        return b[1] - a[1];
+    }));
         
     namesMS.sort()
     
@@ -423,5 +432,100 @@ reader.on('close', () => {
     }
     sortedMap.forEach(logMapElements)
     namesMS.forEach(x => console.log(x))
+});
+// 100
+
+
+
+
+
+// =========================================================================
+// 累積和 S[i] = A[1] + ... + A[i] 
+// A[l]+...+A[r] = (A[0]+...A[r]) - (A[0]+...A[l-1]) = S[r]-S[l-1]
+
+
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]
+    const arrN = new Set()
+    
+    for (var j = 1; j <= N; j++) {
+        arrN.add(parseInt(lines[j]))
+    }
+    
+    //console.log(arrN);
+    let subTotal = 0
+    
+    for (let i = N + 1; i <= N + K; i++) {
+        const arrSubTotal = [...arrN].slice(0, parseInt(lines[i]))
+        //console.log(arrSubTotal)
+        subTotal = arrSubTotal.reduce((sum, x) => sum + x, 0)
+        console.log(subTotal)
+    }
+
+});
+// 2/4
+
+
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]
+    const ans = [0]
+    
+    for (var j = 1; j <= N; j++) {
+        ans.push(ans[j-1] + parseInt(lines[j]))
+    }
+    
+    for (let i = N + 1; i <= N + K; i++) {
+        console.log(ans[parseInt(lines[i])])
+    }
+});
+// 100
+
+
+
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]
+    const arrN = []
+    
+    for (var j = 1; j <= N; j++) {
+        arrN.push(parseInt(lines[j]))
+    }
+    
+    //console.log(arrN);
+    // 計算量が O(N^2)  NG
+    for (let i = N + 1; i <= N + K; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        const arrSubTotal = arrN.slice(temp[0] - 1, temp[1])
+        //console.log(arrSubTotal)
+        const subTotal = arrSubTotal.reduce((sum, x) => sum + x, 0)
+        console.log(subTotal)
+    }
+    
+});
+// 3/4
+
+
+
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]
+    const ans = [0]
+    
+    for (var j = 1; j <= N; j++) {
+        ans.push(ans[j-1] + parseInt(lines[j]))
+    }
+    
+    for (let i = N + 1; i <= N + K; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        // A[l]+...+A[r] = (A[0]+...A[r]) - (A[0]+...A[l-1]) = S[r]-S[l-1]
+        console.log(ans[temp[1]] - ans[temp[0] - 1])
+    }
+    
 });
 // 100
