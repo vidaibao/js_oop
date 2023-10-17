@@ -876,3 +876,75 @@ reader.on('close', () => {
   
 });
 // 50/100
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+// game select pages, count I letter
+
+
+
+reader.on('close', () => {
+    const NK = lines[0].split(' ').map(x => parseInt(x))
+    const N = NK[0]
+    const K = NK[1]
+    const pageSumI = [0]
+    
+    for (let i = 1; i <= N; i++) {
+        pageSumI.push(pageSumI[i - 1] + parseInt(lines[i]))
+    }
+    
+    for (let i = N + 1; i <= N + K; i++) {
+        const temp = lines[i].split(' ').map(x => parseInt(x))
+        const A_l = temp[0]
+        const A_r = temp[1]
+        const B_l = temp[2]
+        const B_r = temp[3]
+        
+        if (!checkRule(A_l, A_r) && !checkRule(B_l, B_r)) {
+            console.log("DRAW");
+            continue
+        } else if (!checkRule(A_l, A_r) && checkRule(B_l, B_r)) {
+            console.log("B");
+            continue
+        } else if (checkRule(A_l, A_r) && !checkRule(B_l, B_r)) {
+            console.log("A");
+            continue
+        }
+        
+        
+        if (findSum(A_l, A_r) > findSum(B_l, B_r)) {
+            console.log("A");
+        } else if (findSum(A_l, A_r) < findSum(B_l, B_r)) {
+            console.log("B");
+        } else  {
+            console.log("DRAW");
+        }
+        
+        
+        
+    }
+    
+    
+    function checkRule(l, r) {
+        const grapedPages = r - l + 1
+        return grapedPages / N >= 1 / 3 ? false : true
+    }
+    
+    
+    function findSum(l, r) {
+        return pageSumI[r] - pageSumI[l - 1]
+    }
+    
+    
+    //console.log(pageSumI);
+});
+
+
+
+
+
