@@ -1,0 +1,40 @@
+body {
+    width: 33%;
+}
+
+.res {
+    background-color: lightgray;
+    border: solid;
+    height: 48px;
+    font-size: 20px;
+    text-align: left;
+}
+
+button[id="btn0"], button[id="btn1"] {
+    background-color: lightgreen;
+    color: brown;
+}
+
+button[id="btnClr"], button[id="btnEql"] {
+    background-color: darkgreen;
+    color: white;
+}
+
+button[id="btnSum"], button[id="btnSub"],
+button[id="btnMul"], button[id="btnDiv"] {
+    background-color: black;
+    color: red;
+}
+
+.buttonContainer > .buttonClass {
+    width: 25%;
+    height: 36px;
+    font-size: 18px;
+    margin: 0px;
+    float: left;
+}
+
+
+
+
+
