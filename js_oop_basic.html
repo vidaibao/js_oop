@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Basics</title>
+    <link rel="stylesheet" href="css/buttonsGrid.css" type="text/css">
+    <style>
+        .buttonClass {
+            width: 96px;
+            height: 48px;
+            font-size: 24px;
+        }
+    </style>
+    <style></style>
+</head>
+<body>
+    <h2 id="title">OOP</h2>
+    <ul id="myList">
+        <!--To be filled by js-->
+        <li>item #1</li>
+        <li>item #2</li>
+    </ul>
+    <!--<script src="inheritance.js"></script>-->
+    <script src="list_binding.js"></script>
+    <script type="text/javascript">
+        const myList = document.getElementById("myList")
+        const listBinding = new ListBinding(myList)
+    </script>
+    <div>
+        <button id="btn" class="buttonClass">0</button>
+    </div>
+    <script src="button.js"></script>
+
+    <hr>
+
+    <div id="btns" class="buttonContainer">
+        <button id="btn1" class="buttonClass">1</button>
+        <button id="btn2" class="buttonClass">2</button>
+        <button id="btn3" class="buttonClass">3</button>
+        <button id="btn4" class="buttonClass">4</button>
+        <button id="btn5" class="buttonClass">5</button>
+        <button id="btn6" class="buttonClass">6</button>
+        <button id="btn7" class="buttonClass">7</button>
+        <button id="btn8" class="buttonClass">8</button>
+        <button id="btn9" class="buttonClass">9</button>
+    </div>
+    <script src="js/buttonsGrid.js"></script>
+    
+
+
+</body>
+</html>
