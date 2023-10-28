@@ -142,6 +142,15 @@ reader.on('close', () => {
     }    
     console.log(arr[k]);
 });
+reader.on('close', () => {
+    const [x, d1, d2, k] = lines[0].split(' ').map(x => parseInt(x))
+    const a = [0, x]
+    for(let i=2; i<=k; i++){
+        a[i] = a[i-1] + (i%2===0? d2 : d1);
+    }
+    console.log(a[k]);
+});
+
 
 
 /**
@@ -179,7 +188,21 @@ reader.on('close', () => {
     }
 
 });
-
+reader.on('close', () => {
+    const [x, d1, d2] = lines[0].split(' ').map(x => parseInt(x))
+    const Q = parseInt(lines[1])
+    const a = [0, x]
+    
+    for(let i=2; i < Q+2; i++){
+        const k = parseInt(lines[i])
+        for(let n=2; n<=k; n++){
+            a[n] = a[n-1] + (n%2===0? d2 : d1);
+        }
+        console.log(a[k]);
+    }
+    
+    
+});
 
 
 /**
@@ -198,9 +221,7 @@ reader.on('close', () => {
 
 reader.on('close', () => {
     const k = parseInt(lines[0])
-    const arr = [0]
-    arr[1] = 1
-    arr[2] = 1
+    const arr = [0, 1, 1]
     
     for (let i = 3; i <= k; i++) {
         arr[i] = arr[i-2] + arr[i-1]   
@@ -225,7 +246,18 @@ reader.on('close', () => {
 ・ a_2 = 1 
 ・ a_n = a_{n-2} + a_{n-1} (n ≧ 3)
  */
-
+reader.on('close', () => {
+    const Q = parseInt(lines[0])
+    const arr = [0, 1, 1]
+    for (let i = 1; i <= Q; i++) {
+        const k = parseInt(lines[i])
+        for (let n = 3; n <= k; n++) {
+            arr[n] = arr[n-2] + arr[n-1]   
+        }
+        console.log(arr[k]);
+    }
+    
+});
 
 
 
@@ -277,7 +309,14 @@ reader.on('close', () => {
     console.log(arr[n]);
 });
 // 100
-
+const n = parseInt(lines[0])
+const dp = [1]
+for(let i=1; i<=n; i++){
+    dp[i] = 0
+    if (i >= 1) dp[i] += dp[i-1]
+    if (i >= 2) dp[i] += dp[i-2]
+}
+console.log(dp[n]);
 
 
 /**
@@ -315,6 +354,19 @@ reader.on('close', () => {
     console.log(ways[n]);
 });
 // 100
+reader.on('close', () => {
+    const [n, a, b] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = [1]
+
+    for(let i=1; i<=n; i++){
+        dp[i] = 0
+        if(i >= a) dp[i] += dp[i-a]
+        if(i >= b) dp[i] += dp[i-b]
+    }
+    console.log(dp[n])
+});
+
+
 
 
 reader.on('close', () => {
@@ -341,7 +393,18 @@ reader.on('close', () => {
     
     console.log(ways[n]);
 });
+reader.on('close', () => {
+    const [n, a, b, c] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = [1]
 
+    for(let i=1; i<=n; i++){
+        dp[i] = 0
+        if(i >= a) dp[i] += dp[i-a]
+        if(i >= b) dp[i] += dp[i-b]
+        if(i >= c) dp[i] += dp[i-c]
+    }
+    console.log(dp[n])
+});
 
 
 
@@ -376,10 +439,7 @@ print dp[n]
 
 
 reader.on('close', () => {
-    const nab = lines[0].split(' ').map(x => parseInt(x))
-    const n = nab[0]
-    const a = nab[1]
-    const b = nab[2]
+    const [n, a, b] = lines[0].split(' ').map(x => parseInt(x))
     
     const dp = [0, a]
     
@@ -422,48 +482,33 @@ dp は dp[n] までではなく、余裕をもって dp[n+4] 程度まで計算�
 
 
 reader.on('close', () => {
-    const nab = lines[0].split(' ').map(x => parseInt(x))
-    const n = nab[0]
-    const a = nab[1]
-    const b = nab[2]
-    
+    const [n, a, b] = lines[0].split(' ').map(x => parseInt(x))
     const dp = new Array(n + 5).fill(Infinity)
-    dp[0] = 0
+    dp[0] = 0 // if assign = [0, a] array will be changed
     dp[1] = a
     
     for (let i = 2; i < n + 5; i++) {
-        if (i >= 2) {
-            dp[i] = Math.min(dp[i], dp[i-2] + a)
-        }
-        if (i >= 5) {
-            dp[i] = Math.min(dp[i], dp[i-5] + b)
-        }
+        if (i >= 2) dp[i] = Math.min(dp[i], dp[i-2] + a)
+        if (i >= 5) dp[i] = Math.min(dp[i], dp[i-5] + b)
     }
-    //const res = dp.slice(n)
-    //console.log(res);
     console.log(Math.min.apply(null, dp.slice(n)));
 });
 
-
+/**
+ * 八百屋にて、りんご x 個が a 円で、りんご y 個が b 円で売られています。
+りんごの買い方を工夫したとき、最終的に n 個のりんごを手に入れるために必要な金額の最小値はいくらでしょうか。
+なお、買い方を工夫した結果、買ったりんごが n+1 個以上になってもよいものとします。
+ */
 
 reader.on('close', () => {
-    const nxayb = lines[0].split(' ').map(x => parseInt(x))
-    const n = nxayb[0]
-    const x = nxayb[1]
-    const a = nxayb[2]
-    const y = nxayb[3]
-    const b = nxayb[4]
+    const [n, x, a, y, b] = lines[0].split(' ').map(x => parseInt(x))
     
     const dp = new Array(n + y).fill(Infinity)
     dp[0] = 0
     
     for (let i = x; i < n + y; i++) {
-        if (i >= x) {
-            dp[i] = Math.min(dp[i], dp[i-x] + a)
-        }
-        if (i >= y) {
-            dp[i] = Math.min(dp[i], dp[i-y] + b)
-        }
+        if (i >= x) dp[i] = Math.min(dp[i], dp[i-x] + a)
+        if (i >= y) dp[i] = Math.min(dp[i], dp[i-y] + b)
     }
     console.log(Math.min.apply(null, dp.slice(n)));
 });
