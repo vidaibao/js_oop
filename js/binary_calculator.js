@@ -32,7 +32,7 @@ document.getElementById('btnEql').onclick = function() {
 
 function Solving(text) {
     const opes = "+-*/"
-    const operator = [...opes].filter(x => text.includes(x))[0]
+    const operator = [...opes].filter(x => text.includes(x))[0] // warning return value []
     const [operand1, operand2] = text.split(operator);
     
     return calculate(operand1, operand2, operator);

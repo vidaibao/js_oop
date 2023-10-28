@@ -45,3 +45,61 @@ function main() {
  * s.split is not a function
    1234
  */
+
+
+
+/**
+ * JavaScript Dates
+ * 
+ * Given a date string, dateString, in the format MM/DD/YYYY, find and return the day name for that date. 
+ * Each day name must be one of the following strings: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, or Saturday. 
+ * For example, the day name for the date 12/07/2016 is Wednesday
+ * 
+ * 
+ * 
+ */
+
+
+
+function getDayName(dateString) {
+    let dayName;
+    // Write your code here
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+    const [month, day, year] = dateString.split('/').map(x => parseInt(x));
+
+    const date = new Date(year, month - 1, day); // Note: Month is 0-based, so we subtract 1 from the month.
+
+    const dayOfWeek = date.getDay();
+    
+    dayName = daysOfWeek[dayOfWeek];
+    
+    return dayName;
+}
+
+
+
+
+function getMaxLessThanK(n, k){
+    let max = 0
+    for(let i=1; i<n; i++){
+        for(let j=i+1; j<=n; j++){
+            let bw = (i & j); // must use ()
+            
+            /**If both bw is less than k and bw is greater than the current max, 
+             * then the expression (bw < k && bw > max) evaluates to true.
+             * When the entire expression is true, it proceeds to execute (max = bw). 
+             * This assigns the value of bw to max, updating max to the new maximum value found.
+             * 
+             * In summary, this code snippet is used to update the max variable if and only if 
+             * the value of bw (result of a bitwise AND operation) is both less than k and greater than the current max. 
+             * If these conditions are met, max is updated with the new maximum value. */
+            (bw < k && bw > max) && (max = bw); //
+        }
+    }
+    return max
+}
+
+
+
+
