@@ -516,28 +516,15 @@ reader.on('close', () => {
 
 
 reader.on('close', () => {
-    const nxaybzc = lines[0].split(' ').map(x => parseInt(x))
-    const n = nxaybzc[0]
-    const x = nxaybzc[1]
-    const a = nxaybzc[2]
-    const y = nxaybzc[3]
-    const b = nxaybzc[4]
-    const z = nxaybzc[5]
-    const c = nxaybzc[6]
+    const [n, x, a, y, b, z, c] = lines[0].split(' ').map(x => parseInt(x))
     
     const dp = new Array(n + z).fill(Infinity)
     dp[0] = 0
     
     for (let i = x; i < n + z; i++) {
-        if (i >= x) {
-            dp[i] = Math.min(dp[i], dp[i-x] + a)
-        }
-        if (i >= y) {
-            dp[i] = Math.min(dp[i], dp[i-y] + b)
-        }
-        if (i >= z) {
-            dp[i] = Math.min(dp[i], dp[i-z] + c)
-        }
+        if (i >= x) dp[i] = Math.min(dp[i], dp[i-x] + a)
+        if (i >= y) dp[i] = Math.min(dp[i], dp[i-y] + b)
+        if (i >= z) dp[i] = Math.min(dp[i], dp[i-z] + c)
     }
     console.log(Math.min.apply(null, dp.slice(n)));
 });
@@ -588,14 +575,9 @@ reader.on('close', () => {
     
     const dp = [0, 1]
 
-    for (let i=2; i <= n; i++) {
-        if (heights[i] >= heights[i-1]) {
-            dp[i] = dp[i-1] + 1
-        } else {
-            dp[i] = 1
-        }
-    }
-    
+    for (let i=2; i <= n; i++) 
+        heights[i] >= heights[i-1] ? dp[i] = dp[i-1] + 1 : dp[i] = 1
+        
     console.log(Math.max.apply(null, dp));
     
 });
