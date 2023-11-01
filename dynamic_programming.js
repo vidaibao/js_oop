@@ -629,9 +629,9 @@ print max({dp[1], ... ,dp[n]})
 reader.on('close', () => {
     const N = parseInt(lines[0])
     const trees = [0]
-    for (let i = 1; i <= N; i++) {
+    for (let i = 1; i <= N; i++) 
         trees.push(parseInt(lines[i]))
-    }
+    
     const dp = [0, 1]
     for (let i = 2; i <= N; i++) {
         dp[i] = 1
@@ -642,11 +642,276 @@ reader.on('close', () => {
         }
     }
 
-    console.log(Math.max.apply(null, dp));
+    console.log(Math.max(...dp));
+    //console.log(Math.max.apply(null, dp));
 });
 
 
 
+/**
+ * 部分和問題 1 (paizaランク B 相当)
+ * 
+ * 
+ * 1 ~ n の番号がついた n 個のおもりがあり、おもり i の重さは a_i です。
+おもりを何個か選んで重さの和が x となるようにすることができるかどうか判定してください。なお、同じおもりを2個以上選ぶことはできません。
+
+(ヒント)
+おもり 1 ~ n を用いて重さの和を x となるようにすることができるか、という問題を考えるために、
+部分問題としておもり 1 ~ n-1 を用いて重さの和を x となるようにすることができるか、という問題を考えてみましょう。
+
+n-1 までのおもりを用いて重さの和を x または x-a_n となるようにすることができれば、
+おもり 1 ~ n を用いて重さの和を x となるようにすることができることがわかります。
+よって、最初はおもり 1 のみを使えることにして問題を解き、次にその結果を利用しておもり 1 ~ 2 を
+使えることにして問題を解く、ということを n まで繰り返せば、元の問題が解けそうです。
+
+dp_k[x] を、おもり k までを用いて重さの和が x となるようにすることができるかどうかを表す真偽値とすると、
+上で考察した関係は漸化式で表すと dp_k[x] = (dp_{k-1}[x] or dp_{k-1}[x-a_k]) となります。
+
+dp_1, dp_2, ... と順に dp_n まで計算すれば問題の答えが求まります。dp_1 から dp_n のそれぞれに対応する 
+n 本の1次元配列 (もしくはこれに相当する2次元配列) を使って実装してもよいのですが、dp_k[x] を
+求めるには dp_{k-1}[x] と dp_{k-1}[x-a_k] さえわかっていれば十分であることを踏まえると、
+ループの回し方を以下の様に工夫することで、これまでと同じように1本の1次元配列で解くことができます。
+
+for i = 0 to x
+    dp[i] <- false
+
+dp[0] <- true   // おもりを選ばなければ、重さの和を0とすることができる
+
+for i = 1 to n  // おもり i までのおもりを使って
+    for j = x down to a_i    // 重さの和を j とすることができるか？
+        if dp[j-a_i] is true then
+            dp[j] <- true   
+
+if dp[x] is true then
+    print "yes"
+else
+    print "no"
+j を x から a_i へ減らす方向にループを回していることに注意してください。
+逆に a_i から x へ 増やす方向にループを回すと正しく答えが求まらない可能性があります。
+理由を考えてみましょう (ヒント: n = 1, a_1 = 5, x = 10 のとき、ループの回し方によって答えはどうなるか？)
+ * 
+
+
+入力例1
+5 19
+7
+18
+5
+4
+8
+
+出力例1
+yes
+ */
+
+
+reader.on('close', () => {
+    const [n, x] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = new Array(x+1).fill(false)
+    const arr = []
+    for (let i = 1; i <= n; i++)
+        arr.push(parseInt(lines[i]))
+
+    // luôn có một cách để tạo ra tổng 0, đó là không chọn bất kỳ phần tử nào từ dãy số ban đầu
+    dp[0] = true
+
+    // Duyệt qua từng phần tử của dãy số ban đầu
+    for (let i = 0; i < n; i++) {
+        // Dùng một vòng lặp từ x đến giá trị của phần tử hiện tại arr[i]
+        for (let j = x; j >= arr[i]; j--) {
+            //kiểm tra nếu dp[j - arr[i]] (tức là có thể tạo ra tổng j - arr[i] bằng cách sử dụng các phần tử trước đó) là true, 
+            //thì chúng ta cũng có thể tạo ra tổng j bằng cách thêm phần tử arr[i] vào tập hợp. Do đó, chúng ta gán dp[j] bằng true.
+            dp[j - arr[i]] && (dp[j] = true);
+        }
+    }
+
+    console.log(dp[x] ? "yes" : "no")
+
+});
+
+reader.on('close', () => {
+    const [n, x] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = new Array(x+1).fill(false)
+    const arr = []
+    for (let i = 1; i <= n; i++)
+        arr.push(parseInt(lines[i]))
+    
+    dp[0] = true
+    for (let w of arr) 
+        for (let j = x; j >= w; j--) 
+            dp[j - w] && (dp[j] = true);
+        
+    console.log(dp[x] ? "yes" : "no")
+});
+
+
+
+
+
+/**
+ * 1 ~ n の番号がついた n 個のおもりがあり、おもり i の重さは a_i です。
+
+おもりを何個か選んで重さの和が x となるようにする方法が何通りあるか求めてください。なお、同じおもりを2個以上選ぶことはできません。
+
+重さが同じおもりが複数存在する場合、それらは区別して別のものとして扱うことにします。
+
+答えは非常に大きくなる可能性があるので、答えを 1,000,000,007 で割った余りで出力してください。
+ * 
+ * 
+ * 
+ * 入力例1
+5 10
+7
+3
+4
+3
+2
+
+出力例1
+3
+
+
+
+方針
+おもり k までを用いて重さの和が x となるようにおもりを選ぶ方法の通り数が求まっていれば、おもり k+1 までを用いて重さの和が 
+x となるようにおもりを選ぶ方法の通り数を求めることができますから、これをおもり 1 から始めておもり n まで繰り返せばよいです。
+dp_k[x] を、おもり k までを用いて重さの和が x となるようにおもりを選ぶ方法の通り数とすると、
+漸化式は dp_k[x] = dp_{k-1}[x-a_k] + dp_{k-1}[x] となります。
+dp_1 から dp_k に対応する k 本の1次元配列 (もしくはこれに相当する2次元配列) を用いて問題を解くこともできますが、
+dp_{k-1}[0] ~ dp_{k-1}[y (≦ x) ] がわかっていれば dp_k[x] が計算できることに気付くと、
+ループの回し方を工夫することで1つの1次元配列 dp だけで問題を解くことができます。
+
+おもり i までのおもりを使って重さの和が j となるようにおもりを選ぶ方法の通り数を求めた直後の dp の値は、
+dp[x (< j) ] がおもり i-1　までのおもりを使って重さの和が x となるようにおもりを選ぶ方法の通り数に、
+dp[x (≧ j) ]がおもり i までのおもりを使って重さの和が x となるようにおもりを選ぶ方法の通り数になっています。
+ */
+
+
+reader.on('close', () => {
+    const [n, x] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = new Array(x+1).fill(0)
+    const mod = 1000000007
+    const arr = []
+    for (let i = 1; i <= n; i++)
+        arr.push(parseInt(lines[i]))
+    
+    // luon có một tập hợp rỗng có tổng bằng 0
+    dp[0] = 1;
+    
+    //Duyệt qua từng phần tử của dãy số ban đầu và từ 1 đến x
+    for (let w of arr) {
+        for (let j = x; j >= w; j--){
+            dp[j] += dp[j - w];
+            dp[j] %= mod; // ensure value in range(mod)
+        }
+    }    
+    console.log(dp[x])
+});
+
+
+
+
+
+/**
+ * 1 ~ n の番号がついた n 個のおもりがあり、おもり i の重さは a_i です。
+
+おもりを何個か選んで重さの和が x となるようにする方法を考えたとき、選ぶおもりの
+
+個数の最小値
+
+を出力してください。
+なお、同じおもりを2個以上選ぶことはできません。
+
+なお、重さの和が x となるようにおもりを選ぶ方法が存在しない場合は-1と出力してください。
+ * 
+ * 
+ * 入力例1
+5 10
+7
+3
+4
+3
+2
+
+出力例1
+2
+
+
+
+
+
+
+方針
+おもり k までを用いて重さの和が x となるようにおもりを選ぶときの個数の最小値が求まっていれば、
+おもり k+1 までを用いて重さの和が x となるようにおもりを選ぶときの個数の最小値を求めることができますから、
+これをおもり 1 から始めておもり n まで繰り返せばよいです。
+dp_k[x] をおもり k までを用いて重さの和が x となるようにおもりを選ぶときの個数の最小値 
+(ただし、そのようにおもりを選ぶ方法が存在しない場合は ∞ ) とすると、
+dp_{k-1}[0] ~ dp_{k-1}[x] と dp_k[x] の関係は dp_k[x] = min(dp_{k-1}[x], dp_{k-1}[x-a_k] + 1) となります。
+dp_1 から dp_k に対応する k 本の1次元配列 (もしくはこれに相当する2次元配列) を用いて問題を解くこともできますが、
+dp_k[x] の計算には dp_{k-1}[0] ~ dp_{k-1}[y (≦ x) ] さえわかっていれば十分であることに気付くと、
+ループの回し方を工夫することで1つの1次元配列 dp だけで問題を解くことができます。
+ */
+
+
+
+reader.on('close', () => {
+    const [n, x] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = new Array(x + 1).fill(n + 1)
+    const arr = []
+    for (let i = 1; i <= n; i++)
+        arr.push(parseInt(lines[i]))
+    
+    // khong có một min tập hợp rỗng có tổng bằng 0
+    dp[0] = 0;
+    
+    //Duyệt qua từng phần tử của dãy số ban đầu và từ 1 đến x
+    for (let w of arr) {
+        for (let j = x; j >= w; j--){
+            if (dp[j - w] !== n + 1) {
+                dp[j] = Math.min(dp[j], dp[j - w] + 1)
+            }
+        }
+    }      
+    console.log(dp[x] == n + 1 ? -1 : dp[x])
+});
+
+
+/**
+ * 1 ~ n の番号がついた n 種類のおもりがあり、おもり i の重さは a_i です。それぞれのおもりは
+ * 無限個存在しており、
+ * 任意のおもりを任意の個数使うことができます。
+
+このとき、おもりを選んで重さの和を x となるようにすることができるかどうか判定してください。
+ * 
+ * 
+ * 入力例1
+5 10
+9
+3
+4
+11
+8
+
+出力例1
+yes
+ */
+
+
+reader.on('close', () => {
+    const [n, x] = lines[0].split(' ').map(x => parseInt(x))
+    const dp = new Array(x + 1).fill(false)
+    const arr = []
+    for (let i = 1; i <= n; i++)
+        arr.push(parseInt(lines[i]))
+    
+    dp[0] = true
+    for (let w of arr) 
+        for (let j = w; j <= x; j++) 
+            dp[j - w] && (dp[j] = true);
+        
+    console.log(dp[x] ? "yes" : "no")
+});
 
 
 
