@@ -174,30 +174,67 @@ reader.on('close', () => {
     const [H, W] = lines[0].split(' ').map(x => parseInt(x))
     const matrix = []
     for (let i = 1; i <= H; i++) 
-        matrix.push(lines[i])
+        matrix.push(lines[i].split(''))
 
+    //console.log(matrix)
     const [y, x] = lines[H + 1].split(' ').map(xx => parseInt(xx))
     
-    swapDiagonal(matrix, y, x, H, W)
+    JustDoIt(matrix, y, x, H, W)
     
-    matrix.forEach(x => console.log(x))
+    matrix.forEach(x => console.log(x.join('')))
 });
 
 
-function swapDiagonal(matrix, y, x, H, W){
-    swap(matrix, y, x);
-    (y > 0 || x > 0) && diagonalUpperLeft(matrix, y, x, H, W)
+function JustDoIt(matrix, y, x, H, W) {
+    const temp = matrix[y][x] == '.' ? '#' : '.';
+    swapCross(matrix, y, x, H, W)
+    swapDiagonal(matrix, y, x, H, W)
+    matrix[y][x] = temp;
 }
 
-function diagonalUpperLeft(matrix, y, x, H, W) {
-    for(let i = y; i >= 0; i--)
+
+function swapCross(matrix, y, x, H, W) {
+    // axis1 Y
+    for (let index = 0; index < H; index++) {
+        swap(matrix, index, x)
+    }
+    // axis2 X
+    for (let index = 0; index < W; index++) {
+        swap(matrix, y, index)
+    }
 }
+
+
+function swapDiagonal(matrix, y, x, H, W){
+    let idxY = y; // ref arguments
+    let idxX = x;
+    // main diagonal
+    while (idxY >= 0 && idxX >= 0) {
+        swap(matrix, idxY, idxX)
+        idxX--; idxY--;
+    }
+    idxY = y; idxX = x;
+    while (idxY < H  && idxX < W) {
+        swap(matrix, idxY, idxX)
+        idxX++; idxY++;
+    }
+    //sub diagonal
+    idxY = y; idxX = x;
+    while (idxY >= 0 && idxX < W) {
+        swap(matrix, idxY, idxX);
+        idxY--; idxX++;
+    }
+    idxY = y; idxX = x;
+    while (idxY < H && idxX >= 0) {
+        swap(matrix, idxY, idxX);
+        idxY++; idxX--;
+    }
+}
+
 
 function swap(matrix, y, x){
     const replace = matrix[y][x] == '.' ? '#' : '.';
-    const temp = [...matrix[y]] 
-    temp[x] = replace;
-    matrix[y] = temp.join('')
+    matrix[y][x] = replace;
 }
 
 
