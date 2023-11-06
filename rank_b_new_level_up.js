@@ -238,6 +238,54 @@ function swap(matrix, y, x){
 }
 
 
+/**
+ * https://marine07.com/5772/b-rank-up2/
+ */
+ reader.on('close', () => {
+    const [H, W] = lines[0].split(' ').map(Number);  // 行数 H , 列数 W の盤面
+    const S = [];
+    const [y, x] = lines[H + 1].split(' ').map(Number);
+    for (let i = 1; i <= H; i++) {
+       S.push(lines[i].split(''));
+    }
+ 
+    function exchange(y, x) {
+       S[y][x] === '.' ? S[y][x] = '#' : S[y][x] = '.';
+    }
+    exchange(y, x);  // 中心
+    for (let z = 1; z < Math.max(H, W); z++) {
+       if (y - z >= 0) {
+          exchange(y - z, x);  // 上
+       }
+       if (y + z < H) {
+          exchange(y + z, x);  // 下
+       }
+       if (x + z < W) {
+          exchange(y, x + z);  // 右
+       }
+       if (x - z >= 0) {
+          exchange(y, x - z);  // 左
+       }
+       if (y + z < H && x + z < W) {
+          exchange(y + z, x + z);  // 右下
+       }
+       if (y - z >= 0 && x - z >= 0) {
+          exchange(y - z, x - z);  // 左上
+       }
+       if (y + z < H && x - z >= 0) {
+          exchange(y + z, x - z);  // 左下
+       }
+       if (y - z >= 0 && x + z < W) {
+          exchange(y - z, x + z);  // 右上
+       }
+    }
+    for (let i = 0; i < H; i++) {
+       console.log(S[i].join(''));
+    }
+ });
+ /**
+  * 
+  */
 
 
 
@@ -253,6 +301,171 @@ function swap(matrix, y, x){
 
 
 
+
+
+
+
+/**
+ * 【マップの扱い 4】マップのナンバリング
+ * 
+ * 
+ * マップの行数 H と列数 W とナンバリングの向き D が与えられるので、(0, 0) から指示通りに
+ * ナンバリングしたとき、マップ全体にどのように番号が振られるかを出力してください。
+
+ナンバリングの向き D に対応する方向と、例として 3×4 のマップをナンバリングをした結果は以下の通りです。
+ * 
+map4_direction00-04.jpeg
+
+なお、マスの座標系は左上端のマスの座標を ( y , x ) = ( 0 , 0 ) とし、
+下方向が y 座標の正の向き、右方向が x 座標の正の向きとします。
+
+
+入力される値
+H W D
+
+
+・ 1 行目に盤面の行数を表す整数 H , 盤面の列数を表す整数 W , 
+ナンバリングの向きを表す整数 D が与えられます。
+
+期待する出力
+・ ナンバリングされたマップ全体を H 行で出力してください。
+・ 要素間は半角スペースで区切ってください、詳しくは入出力例を参考にしてください。
+
+条件
+すべてのテストケースにおいて、以下の条件をみたします。
+
+・ 2 ≦ H, W ≦ 10
+・ 1 ≦ D ≦ 4
+
+入力例1
+4 4 1
+
+出力例1
+1 3 6 10
+2 5 9 13
+4 8 12 15
+7 11 14 16
+
+入力例2
+3 5 2
+
+出力例2
+1 2 3 4 5
+6 7 8 9 10
+11 12 13 14 15
+
+入力例3
+2 2 3
+
+出力例3
+1 3
+2 4
+
+入力例4
+2 5 4
+
+出力例4
+1 2 4 6 8
+3 5 7 9 10
+ */
+
+
+reader.on('close', () => {
+    const [H, W, D] = lines[0].split(' ').map(Number)
+    
+    const matrix = []
+    //const axisY = new Array(W).fill(0)   // cause between ref arr[]
+    for (let y = 0; y < H; y++){
+        matrix.push(new Array(W).fill(0))
+    }
+    
+    NumberingMatrix(matrix, H, W, D)
+        
+    
+    matrix.forEach(x => console.log(x.join('')))
+});
+
+
+function NumberingMatrix(matrix, H, W, D) {
+    let numbering = 1;
+    if (D == 1) {
+        //upper left triangle
+        for (let n = 0; n < H; n++) {
+            // start diagonal
+            let row = n;
+            let col = 0;
+            // 2 conditions
+            while (row >= 0 && col < W){
+                matrix[row][col] = numbering++;
+                row--; col++; 
+            }
+        }
+        // lower triangle
+        for (let n = 1; n < W; n++) {
+            let row = H - 1;
+            let col = n;
+            while (row >= 0 && col < W){
+                matrix[row][col] = numbering++;
+                row--; col++;
+            }
+        }
+    }
+    else if (D === 4) {
+       //upper left triangle
+        for (let n = 0; n < W; n++) {
+            let row = 0;
+            let col = n;
+            // 2 conditions
+            while (row < H && col >= 0){
+                matrix[row][col] = numbering++;
+                row++; col--; 
+            }
+        }
+        // lower triangle
+        for (let n = 1; n < H; n++) {
+            let row = n;
+            let col = W - 1;
+            while (row < H && col >= 0){
+                matrix[row][col] = numbering++;
+                row++; col--;
+            }
+        }
+    }
+    else if (D === 2) {
+        for (let row = 0; row < H; row++) {
+            for (let col = 0; col < W; col++) {
+                matrix[row][col] = numbering++;
+            }
+        }
+    }
+    else if (D === 3) {
+        for (let col = 0; col < W; col++) {
+            for (let row = 0; row < H; row++) {
+                matrix[row][col] = numbering++;
+            }
+        }
+    }
+}
+
+
+
+
+
+/**
+ * シミュレーション 1】反復横跳び 
+ * 
+ * 
+ * 
+ * paiza 君の学校では体力テストがおこなわれており、現在反復横跳びの計測をしています。
+いたずら好きの paiza 君は、友達が光の速さで反復横飛びをしている途中、
+具体的には友達が線を跨ぐのが 4×N 回目になる直前に左の線を元の位置から外側に X cm 遠ざけました。
+
+最終的に友達の反復横跳びの計測結果は K 回となりました。
+友達は正規の反復横跳びで計測結果が K 回となるときよりも何 cm 多く移動したでしょうか
+
+なお、今回の反復横跳びでは中央の線を跨いだ状態から始めて、右の線→中央の線→左の線→中央の線→... 
+といった順番で跨いで行くものとします。
+ */
 
 
 
