@@ -200,6 +200,149 @@ reader.on('close', () => {
 
 
 
+/**
+ * 【シミュレーション 2】perfect shuffle (paizaランク B 相当)
+ * 
+ * 
+ * トランプのシャッフルの種類の一つにパーフェクトシャッフルというものがあり、パーフェクトシャッフルにおける 1 回のシャッフルは次の一連の操作を指します。
+
+1. 全52枚の山札を上半分と下半分に分ける。
+2. 下半分の一番下のカード, 上半分の一番下のカード, 下半分の下から 2 番目のカード, 上半分の下から 2 番目のカード, ... , 下半分の一番上のカード, 上半分の一番上のカード という順番でカードを積み重ねていく。
+
+トランプの絵柄をS(スペード), H(ハート), D(ダイア), C(クラブ) と表現するものとし、その絵柄の 1 からキングまでの各カードを S_1 , ... , S_13 のように表現するものとします。
+
+上から S_1, ... , S_13, H_1, ... , H_13, D_1, ... , D_13, C_1, ... , C_13 という順のトランプの山札を用いてパーフェクトシャッフルの操作を K 回おこなった後の山札のカードを上から順に出力してください。
+
+カードの出力には {絵柄のアルファベット}_{カードの数字} の表現法を用いてください。
+ * 
+ */
+
+reader.on('close', () => {
+    const K = parseInt(lines[0])
+    const originTrump = []
+    let newTrump = []
+    let upperTrump = []
+    let lowerTrump = []
+    const kinds = ['S', 'H', 'D', 'C']
+    for (let k of kinds) {
+        for (let i = 1; i <= 13; i++) {
+            originTrump.push(k + '_' + i);
+        }
+    }
+    if (K == 0) {
+        originTrump.forEach(x => console.log(x))
+        return
+    }
+    
+    newTrump = [...originTrump]
+    for (let k = 1; k <= K; k++) {
+        
+        upperTrump = newTrump.slice(0, 26)
+        lowerTrump = newTrump.slice(26)
+        
+        newTrump = []
+        for (let i = 1; i <= 26; i++) {
+            newTrump.push(upperTrump[i-1])
+            newTrump.push(lowerTrump[i-1])
+        }
+    }
+    
+    //console.log(upperTrump);
+    //console.log(lowerTrump);
+    
+    
+    //console.log(newTrump);
+    newTrump.forEach(x => console.log(x))
+    
+});
+
+
+
+
+/**
+ * 【シミュレーション 3】燃費 (paizaランク B 相当)
+ * 
+ * 
+ * 
+ * 一般的な車では、車が止まった状態から発進する際は燃費がよくないことが知られています。
+このことを知った paiza 君は発進時とそれ以外での燃費を分けて考えることで実際の燃費を求めたいと考えました。
+
+具体的には、発進から X m 走るまでは 1 m あたり燃料が F_1 ml, 発進から X m 走った後から止まるまでは 1 m あたり燃料が F_2 ml かかります。
+途中、出発地点から s_1(m), ..., s_N(m) の地点で一時停止をしながら全長 L m を走ると、全体を通して必要な燃料は何 ml になるでしょうか？
+
+なお、停車中の燃料の消費や燃料切れについては考えないものとします。
+
+入力される値
+X
+F_1 F_2
+L N
+s_1 ... s_N
+
+
+期待する出力
+途中 s_1(m), ..., s_N(m) の地点で一時停止をしながら全長 L m を走ると、全体を通して必要な燃料(ml) を出力してください。
+
+条件
+・1 ≦ X ≦ 1000
+・1 ≦ F_2 ≦ F_1 ≦ 100
+・1 ≦ N ≦ 1000
+・0 < s_1
+・s_i < s_{i+1}(1 ≦ i < N)
+・s_N ≦ L ≦ 1,000,000,000
+
+入力例1
+10
+7 3
+100 1
+50
+
+出力例1
+380
+
+入力例2
+50
+5 4
+100 2
+30 60
+
+出力例2
+500
+
+ */
+
+
+reader.on('close', () => {
+    const X = parseInt(lines[0])
+    const [F1, F2] = lines[1].split(' ').map(Number);
+    const [L, N] = lines[2].split(' ').map(Number);
+    const S = [0].concat(lines[3].split(' ').map(Number), L);
+    //S.push(L)//
+    //console.log(S);
+    let res = 0
+
+    for (var i = 1; i < S.length; i++) {
+        const dS = S[i] - S[i-1]    // deltaS
+      if (dS > X) {
+          res += X * F1 + (dS - X) * F2;
+      } else {
+          res += dS * F1
+      }
+    }
+
+    console.log(res);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
