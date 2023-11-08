@@ -336,9 +336,59 @@ reader.on('close', () => {
 
 
 
+/**
+ * C069:お祭りの日付
 
 
+paiza 王国では 4 で割って余りが 1 になる年に開催されるパイーザ祭があります。
+paiza 王国では暦が独特であり、以下のような暦になっています。
 
+・1 年には 1 月から 13 月までの 13 ヶ月がある。
+・偶数月の日数は 15 日である。
+・奇数月の日数は 13 日である。
+
+paiza 王国の国民たちはこのパイーザ祭が大好きでいつも、次に開催される日を楽しみにしています。
+あなたも、パイーザ祭を楽しみにしているので、次の開催日まであと何日あるのか早く知りたいです。
+
+そこで、あなたには、現在の日付と次のパイーザ祭の開催日が与えられるので、次のパイーザ祭までの日数を計算するプログラムを作ってもらいます。
+ただし、今年パイーザ祭は開催されないことはわかっており、今日の日付はカウントされません。
+
+入力例 1 の場合、以下のようになります。
+ * 
+ * 
+ * 
+ * 
+ */
+
+reader.on('close', () => {
+    const [y, m, d] = lines[0].split(' ').map(Number);
+    const [a, b] = lines[1].split(' ').map(Number);
+    let nextCelebYear = y;
+    let countDays = 0;
+    while(nextCelebYear % 4 != 1){
+        nextCelebYear++
+    }
+    //console.log(nextCelebYear)
+    
+    for (let year = y; year <= nextCelebYear; year++) {
+        const monthOfYear = year == nextCelebYear ? a : 13
+        for (let month = year > y ? 1 : m; month <= monthOfYear; month++) {
+            //console.log(month)
+            let dayOfMonth = 1;
+            if (year == nextCelebYear && month == a) {
+                dayOfMonth = b + 1
+            } else {
+                dayOfMonth = month % 2 == 0 ? 15 : 13
+            }
+            //console.log(dayOfMonth)
+            let startDay = countDays == 0 ? d + 1 : 0
+            
+            countDays += dayOfMonth - startDay;
+        }
+    }
+    
+    console.log(countDays);
+});
 
 
 
