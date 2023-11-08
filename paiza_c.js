@@ -394,12 +394,186 @@ reader.on('close', () => {
 
 
 
+/**
+ * C018:何人前作れる？
+ * 
+ * 
+ * 
+ * 魅力的な料理のレシピを手に入れたあなたは、早速調理を始めたいと思っています。
+レシピには、1人前を調理するのに必要な食材とその量が載っています。
+
+このレシピと、あなたが所持している食材とその量が与えられるので、最大で何人前作れるかを求めてください。
+
+入力される値
+入力は以下のフォーマットで与えられます。
+
+n　　　　　#レシピに書かれている食材の数を表す整数 n
+a_1 b_1　　#レシピに書かれている食材の名前 a_1, 数 b_1
+a_2 b_2　　#レシピに書かれている食材の名前 a_2, 数 b_2
+...
+a_n b_n　　#レシピに書かれている食材の名前 a_n, 数 b_n
+m　　　　　#あなたが所持している食材の数を表す整数 m
+c_1 d_1　　#所持している食材の名前 c_1, 数 d_1
+c_2 d_2　　#所持している食材の名前 c_2, 数 d_2
+...
+c_m d_m　　#所持している食材の名前 c_m, 数 d_m
+ここで、n はレシピに書かれている食材の数を表す整数
+文字列 a_i と整数 b_i (1 ≦ i ≦ n) は、1人前あたりの食材 a_i が b_i だけ必要であることを表します。
+
+同様に、m はあなたが所持している食材の数を表す整数
+文字列 c_i と整数 d_i (1 ≦i ≦ m) は、食材 c_i を d_i だけ所持していることを表します。
+
+
+期待する出力
+何人前作ることができるかを数字で一行に出力してください。
+
+最後は改行し、余計な文字、空行を含んではいけません。
+条件
+すべてのテストケースで以下の条件を満たします。
+
+・1 ≦ n ≦ 100
+・0 ≦ m ≦ 100
+・1 ≦ a_i の長さ, c_i の長さ ≦ 10
+・1 ≦ b_i ≦ 100
+・1 ≦ d_i ≦ 10,000
+・i ≠ j のとき a_i ≠ a_j
+・i ≠ j のとき c_i ≠ c_j
+
+入力例1
+4
+supaisu 5
+imo 2
+niku 2
+mizu 3
+6
+mizu 7
+imo 4
+ninjin 10
+unagi 6
+supaisu 20
+niku 5
+出力例1
+2
+入力例2
+2
+gohan 1
+okazu 1
+1
+mizu 10000
+出力例2
+0
+
+ */
+
+
+reader.on('close', () => {
+    const n = parseInt(lines[0])
+    const m = parseInt(lines[n + 1])
+    const iHave = []
+    for (let i = n + 2; i < n + 2 + m; i++) {
+        const temp = lines[i].split(' ')
+        iHave[temp[0]] = parseInt(temp[1])
+    }
+    //console.log(iHave);
+    
+    let serving = []
+    for (let i = 1; i <= n; i++) {
+        const temp = lines[i].split(' ')
+        //console.log(!iHave.hasOwnProperty(temp[0]))
+        if ( !iHave.hasOwnProperty(temp[0]) ||
+            iHave[temp[0]] / parseInt(temp[1]) < 1 ) {
+            console.log(0);
+            return;
+        }
+        let ninbun = Math.floor(iHave[temp[0]] / parseInt(temp[1]));
+        serving.push(ninbun); 
+        //console.log(ninbun, iHave[temp[0]], temp[1]);
+    }
+    console.log(Math.min(...serving))    
+});
 
 
 
 
 
 
+
+/**
+ * C065:【ぱいじょ！コラボ問題】数字あてゲーム
+ * 
+ * 
+ * 
+ * 霧島京子・六村リオ・緑川つばめの3人は、「数字を使ったゲームを考える」というグループ課題で、次のようなゲームを考えました。
+
+プレイヤーには、ある正整数 a に関する N 個のヒントが与えられます。
+あなたはプレイヤーとして、そのヒントに基づいた正整数 a を推定し、出力してください。
+
+ヒントには、以下の 3 種類があります。
+x を変数として、
+
+・"> x" は、a が x よりも大きいことを示します。
+・"< x" は、a が x よりも小さいことを示します。
+・"/ x" は、a が x でちょうど割り切れることを示します。
+
+例えば、入力例 1 では以下のヒント 3 つが与えられます。
+
+> 30
+< 40
+/ 5
+
+このヒントを読み替えると、正整数 a は 30 より大きく 40 より小さい 5 で割り切れるものだとわかります。
+すなわち、入力例 1 では a = 35 とわかるので 35 を出力してください。
+
+条件
+すべてのテストケースにおいて、以下の条件をみたします。
+
+・1 ≦ N ≦ 10
+・各 i (1 ≦ i ≦ N) について
+　・o_i は半角記号で ">", "<", "/" のいずれか
+　・1 ≦ x_i ≦ 100
+・N 個の条件を満たす正整数は一意に定まる。
+入力例1
+3
+> 30
+< 40
+/ 5
+出力例1
+35
+入力例2
+4
+/ 4
+< 90
+/ 6
+> 77
+出力例2
+84
+ */
+
+
+
+
+
+reader.on('close', () => {
+    let X = [];
+    for ( let j=1; j<=100; X.push(j++) ) {}
+    
+    for (let i = 1, n = parseInt(lines[0]); i <= n; i++) {
+        const temp = lines[i].split(' ')
+        //const index = X.indexOf(parseInt(temp[1]))
+        if (temp[0] == '>') {
+            X = X.filter(x => x > parseInt(temp[1]))
+        } 
+        else if (temp[0] == '<') {
+            X = X.filter(x => x < parseInt(temp[1]))
+        } 
+        else { // '/'
+            //console.log("////");
+            X = X.filter(x => x % parseInt(temp[1]) == 0)
+        }
+    }
+
+    console.log(X[0]);
+});
 
 
 
